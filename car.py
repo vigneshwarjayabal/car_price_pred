@@ -32,7 +32,7 @@ def set_bg(image_path):
     )
 
 # Apply background image
-set_bg("https://github.com/vigneshwarjayabal/car_price_pred/blob/main/bgimage.jpeg")
+set_bg("https://raw.githubusercontent.com/vigneshwarjayabal/car_price_pred/main/bgimage.jpeg")
 
 # Custom CSS for improved UI
 st.markdown(

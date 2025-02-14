@@ -7,33 +7,37 @@ import base64
 st.set_page_config(page_title="CarWise - Your Ultimate Car Companion", layout="wide")
 
 # Load background image
-def set_bg(image_path):
-    with open(image_path, "rb") as f:
-        encoded_string = base64.b64encode(f.read()).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpeg;base64,{encoded_string}");
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-        }}
-        .overlay {{
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 0;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+import requests
 
-# Apply background image
+def set_bg(image_url):
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        encoded_string = base64.b64encode(response.content).decode()
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/jpeg;base64,{encoded_string}");
+                background-size: cover;
+                background-attachment: fixed;
+                background-position: center;
+            }}
+            .overlay {{
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 0;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.error("❌ Background image could not be loaded!")
+
+# Apply background image using the correct RAW URL
 set_bg("https://raw.githubusercontent.com/vigneshwarjayabal/car_price_pred/main/bgimage.jpeg")
-
 # Custom CSS for improved UI
 st.markdown(
     """

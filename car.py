@@ -113,7 +113,7 @@ selected = option_menu(
 )
 
 if selected in ["Home", "Price Prediction"]:
-    set_bg("C:/study material/guvi/project/car_pred/bgimage.jpeg")
+    set_bg("https://raw.githubusercontent.com/vigneshwarjayabal/car_price_pred/main/bgimage.jpeg")
 
 
 # Home Page Content

@@ -5,4 +5,5 @@ python-dotenv
 spacy
 pandas
 requests
+streamlit-option_menu
 scikit-learn

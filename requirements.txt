@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+streamlit-option_menu
+scikit-learn
+scipy
+psycopg2
+sqlalchemy
+python-dotenv
+spacy && python -m spacy download en_core_web_sm
+requests  

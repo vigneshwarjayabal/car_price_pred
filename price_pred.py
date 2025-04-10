@@ -106,7 +106,7 @@ def main():
     transmission_encoded = encode_value(label_encoders['transmission'], transmission)
 
     # Prepare input for model
-    input_data = np.array([[brand_encoded, model_encoded, engine_displacement, fuel_type_encoded,
+    input_data = np.array([[brand_encoded, model_encoded, engine_displacement, fuel_encoded,
                             insurance_encoded, kms_driven, location_encoded, model_encoded,
                             ownership_encoded, registration_year, seats, transmission_encoded]])
 

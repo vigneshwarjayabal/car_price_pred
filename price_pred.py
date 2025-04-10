@@ -47,7 +47,7 @@ def main():
 
     # Load encoders
     try:
-        with open("lable_encoders.pkl", "rb") as f:
+        with open("label_encoders.pkl", "rb") as f:
             label_encoders = pickle.load(f)
     except FileNotFoundError:
         st.error("Encoder file not found! Please ensure 'encoders.pkl' exists.")

@@ -78,14 +78,6 @@ def main():
     st.title("🚘 Car Price Prediction")
     st.write("Fill in the details below to predict the estimated price of a used car.")
 
-    # Layout with 2 columns
-    brand_options = sorted(df["brand"].dropna().astype(str).unique().tolist())
-    fuel_options = sorted(df["fuel_type"].dropna().astype(str).unique().tolist())
-    insurance_options = sorted(df["insurance"].dropna().astype(str).unique().tolist())
-    location_options = sorted(df["location"].dropna().astype(str).unique().tolist())
-    ownership_options = sorted(df["ownership"].dropna().astype(str).unique().tolist())
-    transmission_options = sorted(df["transmission"].dropna().astype(str).unique().tolist())
-
     # Layout
     col1, col2 = st.columns(2)
 

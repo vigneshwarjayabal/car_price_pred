@@ -39,7 +39,7 @@ def main():
     """Main function to run the Streamlit Car Price Prediction App."""
     # Load Model and Label Encoders
     try:
-        with open("model1.pkl", "rb") as model_file:
+        with open("model.pkl", "rb") as model_file:
             model = pickle.load(model_file)
         with open("label_encoders.pkl", "rb") as encoder_file:
             label_encoders = pickle.load(encoder_file)

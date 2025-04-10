@@ -55,7 +55,7 @@ def main():
 
     # Load dataset
     try:
-        df = pd.read_csv("car_details.csv")
+        df = pd.read_csv("car_details2.csv")
     except FileNotFoundError:
         st.error("Dataset file not found! Ensure 'car_details2.csv' exists.")
         return

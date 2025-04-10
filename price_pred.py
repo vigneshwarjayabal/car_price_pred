@@ -100,6 +100,7 @@ def main():
     # Convert Selected Values to Encoded Values (Handles missing encoders safely)
         # Encode all categorical inputs
     brand_encoded = encode_value(label_encoders.get("brand"), brand)
+    model_encoded = encode_value(label_encoders.get("model"), model)
     fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
     insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
     location_encoded = encode_value(label_encoders.get("location"), location)

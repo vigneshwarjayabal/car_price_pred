@@ -39,7 +39,7 @@ def main():
     """Main function to run the Streamlit Car Price Prediction App."""
     # Load Model and Label Encoders
     try:
-        with open("model1.pkl", "rb") as model_file:
+        with open("model.pkl", "rb") as model_file:
             model = pickle.load(model_file)
         with open("label_encoders.pkl", "rb") as encoder_file:
             label_encoders = pickle.load(encoder_file)
@@ -80,8 +80,6 @@ def main():
 
     with col1:
         brand = st.selectbox("Select Brand", brand_options)
-        model_options = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
-        model = st.selectbox("Select Model", model_options)
         fuel_type = st.selectbox("Fuel Type", fuel_options)
         insurance = st.selectbox("Insurance", insurance_options)
         location = st.selectbox("Location", location_options)
@@ -103,13 +101,12 @@ def main():
     fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
     insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
     location_encoded = encode_value(label_encoders.get("location"), location)
-    model_encoded = encode_value(label_encoders.get("model"), model_name)
     ownership_encoded = encode_value(label_encoders.get("ownership"), ownership)
     transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
 
     # Prepare input array
     input_data = np.array([[brand_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
-                             location_encoded, model_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
+                             location_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
 
     # Predict button
     if st.button("Predict Price 💰"):

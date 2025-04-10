@@ -105,7 +105,7 @@ def main():
     transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
 
     # Prepare input array
-    input_data = np.array([[brand_encoded,model_name, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
+    input_data = np.array([[brand_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
                              location_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
 
     # Predict button

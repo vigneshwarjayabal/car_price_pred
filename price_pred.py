@@ -63,6 +63,7 @@ def main():
 
     # Unique dropdown options
     brand_options = sorted(df["brand"].dropna().astype(str).unique().tolist())
+    model_options = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
     fuel_options = sorted(df["fuel_type"].dropna().astype(str).unique().tolist())
     insurance_options = sorted(df["insurance"].dropna().astype(str).unique().tolist())
     location_options = sorted(df["location"].dropna().astype(str).unique().tolist())
@@ -80,6 +81,7 @@ def main():
 
     with col1:
         brand = st.selectbox("Select Brand", brand_options)
+        model = st.selectbox("Select Model", model_options)
         fuel_type = st.selectbox("Fuel Type", fuel_options)
         insurance = st.selectbox("Insurance", insurance_options)
         location = st.selectbox("Location", location_options)
@@ -87,10 +89,10 @@ def main():
     with col2:
         ownership = st.selectbox("Ownership Type", ownership_options)
         transmission = st.selectbox("Transmission Type", transmission_options)
-        engine_displacement = st.number_input("Engine Displacement (cc)", min_value=500, max_value=7000, step=1)
+        engine_displacement = st.number_input("Engine Displacement (cc)", min_value=0, max_value=7000, step=1)
         kms_driven = st.number_input("Kilometers Driven", min_value=0, max_value=500000, step=100)
         registration_year = st.number_input("Registration Year", min_value=1990, max_value=2025, step=1)
-        seats = st.number_input("Number of Seats", min_value=2, max_value=9, step=1)
+        seats = st.number_input("Number of Seats", min_value=4, max_value=9, step=1)
     
     # Get the first model name for the selected brand
     model_name = df[df["brand"] == brand]["model"].dropna().unique()

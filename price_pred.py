@@ -94,9 +94,7 @@ def main():
         registration_year = st.number_input("Registration Year", min_value=1990, max_value=2025, step=1)
         seats = st.number_input("Number of Seats", min_value=4, max_value=9, step=1)
     
-    # Get the first model name for the selected brand
-    model_name = model
-
+    
     # Convert Selected Values to Encoded Values (Handles missing encoders safely)
         # Encode all categorical inputs
     brand_encoded = encode_value(label_encoders.get("brand"), brand)
@@ -109,7 +107,7 @@ def main():
     transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
 
     # Prepare input array
-    input_data = np.array([[brand_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
+    input_data = np.array([[brand_encoded, model_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
                             location_encoded, model_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
 
     # Predict button

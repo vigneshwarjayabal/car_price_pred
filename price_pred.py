@@ -80,7 +80,7 @@ def main():
 
     with col1:
         brand = st.selectbox("Select Brand", brand_options)
-        model = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
+        model_option = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
         model = st.selectbox("Select Model", model_options)
         fuel_type = st.selectbox("Fuel Type", fuel_options)
         insurance = st.selectbox("Insurance", insurance_options)

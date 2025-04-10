@@ -47,7 +47,7 @@ def main():
 
     # Load encoders
     try:
-        with open("label_encoders.pkl", "rb") as f:
+        with open("label_encoders1.pkl", "rb") as f:
             label_encoders = pickle.load(f)
     except FileNotFoundError:
         st.error("Encoder file not found! Please ensure 'encoders.pkl' exists.")
@@ -55,7 +55,7 @@ def main():
 
     # Load dataset
     try:
-        df = pd.read_csv("car_details2.csv")
+        df = pd.read_csv("car_details_encoded.csv")
     except FileNotFoundError:
         st.error("Dataset file not found! Ensure 'car_details2.csv' exists.")
         return

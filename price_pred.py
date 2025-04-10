@@ -80,7 +80,7 @@ def main():
 
     with col1:
         brand = st.selectbox("Select Brand", brand_options)
-        model_options = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
+        model = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
         model = st.selectbox("Select Model", model_options)
         fuel_type = st.selectbox("Fuel Type", fuel_options)
         insurance = st.selectbox("Insurance", insurance_options)
@@ -100,6 +100,7 @@ def main():
 
     # Convert Selected Values to Encoded Values (Handles missing encoders safely)
     brand_encoded = encode_value(label_encoders.get("brand"), brand)
+    model_encode = encode_value(label_encoders.get("model"), model)
     fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
     insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
     location_encoded = encode_value(label_encoders.get("location"), location)
@@ -108,7 +109,7 @@ def main():
     transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
 
     # Prepare input array
-    input_data = np.array([[brand_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
+    input_data = np.array([[brand_encoded, model_encode, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
                              location_encoded, model_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
 
     # Predict button

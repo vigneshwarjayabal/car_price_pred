@@ -97,13 +97,13 @@ def main():
         seats = st.number_input("Number of Seats", min_value=4, max_value=9, step=1)
 
     # Encode inputs
-    brand_encoded = encode_value(label_encoders.get("brand"), brand)
-    model_encoded = encode_value(label_encoders.get("model"), car_model)
-    fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
-    insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
-    location_encoded = encode_value(label_encoders.get("location"), location)
-    ownership_encoded = encode_value(label_encoders.get("ownership"), ownership)
-    transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
+    brand_encoded = encode_value(label_encoders['brand'], brand)
+    model_encoded = encode_value(label_encoders['model'], model)
+    fuel_encoded = encode_value(label_encoders['fuel_type'], fuel_type)
+    insurance_encoded = encode_value(label_encoders['insurance'], insurance)
+    location_encoded = encode_value(label_encoders['location'], location)
+    ownership_encoded = encode_value(label_encoders['ownership'], ownership)
+    transmission_encoded = encode_value(label_encoders['transmission'], transmission)
 
     # Prepare input for model
     input_data = np.array([[brand_encoded, model_encoded, engine_displacement, fuel_type_encoded,

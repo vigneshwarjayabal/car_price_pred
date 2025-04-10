@@ -63,7 +63,6 @@ def main():
 
     # Unique dropdown options
     brand_options = sorted(df["brand"].dropna().astype(str).unique().tolist())
-    model_options = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
     fuel_options = sorted(df["fuel_type"].dropna().astype(str).unique().tolist())
     insurance_options = sorted(df["insurance"].dropna().astype(str).unique().tolist())
     location_options = sorted(df["location"].dropna().astype(str).unique().tolist())
@@ -81,7 +80,8 @@ def main():
 
     with col1:
         brand = st.selectbox("Select Brand", brand_options)
-        model = st.selectbox("Select Model", model_options)
+        filtered_models = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
+        model = st.selectbox("Select Model", sorted(filtered_models))
         fuel_type = st.selectbox("Fuel Type", fuel_options)
         insurance = st.selectbox("Insurance", insurance_options)
         location = st.selectbox("Location", location_options)

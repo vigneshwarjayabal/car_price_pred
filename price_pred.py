@@ -65,7 +65,6 @@ def main():
 
     # Unique dropdown options
     brand_options = sorted(df["brand"].dropna().astype(str).unique().tolist())
-    filtered_models = df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist()
     fuel_options = sorted(df["fuel_type"].dropna().astype(str).unique().tolist())
     insurance_options = sorted(df["insurance"].dropna().astype(str).unique().tolist())
     location_options = sorted(df["location"].dropna().astype(str).unique().tolist())

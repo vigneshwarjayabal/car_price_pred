@@ -95,8 +95,7 @@ def main():
         seats = st.number_input("Number of Seats", min_value=4, max_value=9, step=1)
     
     # Get the first model name for the selected brand
-    model_name = df[df["brand"] == brand]["model"].dropna().unique()
-    model_name = model_name[0] if len(model_name) > 0 else "Unknown Model"
+    model_name = model
 
     # Convert Selected Values to Encoded Values (Handles missing encoders safely)
     brand_encoded = encode_value(label_encoders.get("brand"), brand)

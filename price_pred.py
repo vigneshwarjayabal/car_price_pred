@@ -98,22 +98,34 @@ def main():
     model_name = model
 
     # Convert Selected Values to Encoded Values (Handles missing encoders safely)
+        # Encode all categorical inputs
     brand_encoded = encode_value(label_encoders.get("brand"), brand)
     fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
     insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
     location_encoded = encode_value(label_encoders.get("location"), location)
-    model_encoded = encode_value(label_encoders.get("model"), model_name)
+    model_encoded = encode_value(label_encoders.get("model"), model)
     ownership_encoded = encode_value(label_encoders.get("ownership"), ownership)
     transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
 
     # Prepare input array
     input_data = np.array([[brand_encoded, engine_displacement, fuel_type_encoded, insurance_encoded, kms_driven, 
-                             location_encoded, model_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
+                            location_encoded, model_encoded, ownership_encoded, registration_year, seats, transmission_encoded]])
 
     # Predict button
     if st.button("Predict Price 💰"):
-        prediction = model.predict(input_data)[0]
-        st.success(f"🚗 Estimated Price for {brand} {model_name}: ₹{round(prediction, 2)}")  
+        # Check for any invalid encoded values (-1)
+        if -1 in input_data:
+            st.error("Some selected values were not recognized by the model. Please verify your selections.")
+        else:
+            # Ensure input data is float64 for model compatibility
+            input_data = input_data.astype(np.float64)
+
+            try:
+                prediction = model.predict(input_data)[0]
+                st.success(f"🚗 Estimated Price for {brand} {model}: ₹{round(prediction, 2)}")
+            except Exception as e:
+                st.error(f"Prediction failed due to: {e}")
+ 
 
 # Run the app
 if __name__ == "__main__":

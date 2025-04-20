@@ -1,4 +1,8 @@
 import streamlit as st
+
+# Set Streamlit page configuration
+st.set_page_config(page_title="Car Price Predictor", layout="centered")
+
 import numpy as np
 import pandas as pd
 import pickle
@@ -28,9 +32,6 @@ def set_bg(image_path):
 
 
 def main():
-    st.set_page_config(page_title="Car Price Predictor", layout="centered")
-    
-    # Background image function
     set_bg("bgimage.jpeg")
 
     st.title("🚗 Used Car Price Predictor")

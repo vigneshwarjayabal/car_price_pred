@@ -64,42 +64,42 @@ def main():
 
     # Encode inputs
     # Encode inputs
-def encode_inputs(user_inputs):
-    encoded = []
-    for col, val in user_inputs.items():
-        le = encoders.get(col)
-        if le:
-            try:
-                encoded.append(le.transform([val])[0])
-            except:
-                encoded.append(0)  # fallback
-        else:
-            encoded.append(val)
-    return encoded
-
-# Before prediction, print the shape of final_input
-if st.button("💸 Predict Price"):
-    user_input = {
-        "brand": brand,
-        "fuel_type": fuel,
-        "insurance": insurance,
-        "location": location,
-        "model": model_name,
-        "ownership": ownership,
-        "transmission": transmission,
-        "engine_displacement": engine_disp,
-        "kms_driven": kms_driven,
-        "seats": seats,
-        "car_age": car_age
-    }
-
-    final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
+    def encode_inputs(user_inputs):
+        encoded = []
+        for col, val in user_inputs.items():
+            le = encoders.get(col)
+            if le:
+                try:
+                    encoded.append(le.transform([val])[0])
+                except:
+                    encoded.append(0)  # fallback
+            else:
+                encoded.append(val)
+        return encoded
     
-    # Debugging: Print the shape of the final_input to check if it matches the expected number of features
-    st.write(f"Input features shape: {final_input.shape}")
-
-    prediction = model.predict(final_input)[0]
-    st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
+    # Before prediction, print the shape of final_input
+    if st.button("💸 Predict Price"):
+        user_input = {
+            "brand": brand,
+            "fuel_type": fuel,
+            "insurance": insurance,
+            "location": location,
+            "model": model_name,
+            "ownership": ownership,
+            "transmission": transmission,
+            "engine_displacement": engine_disp,
+            "kms_driven": kms_driven,
+            "seats": seats,
+            "car_age": car_age
+        }
+    
+        final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
+        
+        # Debugging: Print the shape of the final_input to check if it matches the expected number of features
+        st.write(f"Input features shape: {final_input.shape}")
+    
+        prediction = model.predict(final_input)[0]
+        st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
 
 
 if __name__ == "__main__":

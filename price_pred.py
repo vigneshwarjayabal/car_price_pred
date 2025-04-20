@@ -1,8 +1,4 @@
 import streamlit as st
-
-# Set Streamlit page configuration
-st.set_page_config(page_title="Car Price Predictor", layout="centered")
-
 import numpy as np
 import pandas as pd
 import pickle

@@ -1,10 +1,13 @@
 import streamlit as st
-import pickle
 import numpy as np
 import pandas as pd
+import pickle
 import base64
 import os
 
+# ------------------------------
+# 🔧 Set background function
+# ------------------------------
 def set_bg(image_path):
     """Set background image for the Streamlit app."""
     if os.path.exists(image_path):
@@ -26,96 +29,85 @@ def set_bg(image_path):
     else:
         st.warning("Background image not found! Ensure the file path is correct.")
 
-def encode_value(encoder, value):
-    """Safely encode categorical values using label encoder."""
-    if encoder is None:
-        return -1  # Default encoding if encoder is missing
-    if value in encoder.classes_:
-        return encoder.transform([value])[0]
-    else:
-        return -1  # Assigning a default encoding for unseen values
-
+# ------------------------------
+# 🧠 Main Streamlit App
+# ------------------------------
 def main():
-    """Main function to run the Streamlit Car Price Prediction App."""
-    # Load Model and Label Encoders
-    try:
-        with open("model1.pkl", "rb") as model_file:
-            model = pickle.load(model_file)
-        with open("label_encoders.pkl", "rb") as encoder_file:
-            label_encoders = pickle.load(encoder_file)
+    st.set_page_config(page_title="Car Price Predictor", layout="centered")
+    set_bg("bgimage.jpeg")
 
-        # Convert label encoder keys to lowercase
-        label_encoders = {k.lower(): v for k, v in label_encoders.items()}
+    st.title("🚗 Used Car Price Predictor")
+    st.markdown("Fill the details below to get the **predicted resale price** of your car.")
 
-    except FileNotFoundError:
-        st.error("Model files not found! Ensure 'model.pkl' and 'label_encoders.pkl' exist.")
-        return
+    # Load model and encoders
+    model = pickle.load(open("random_forest_model.pkl", "rb"))
+    encoders = pickle.load(open("encoders.pkl", "rb"))
 
-    # Load car dataset
-    try:
-        df = pd.read_csv("car_details2.csv")
-    except FileNotFoundError:
-        st.error("Dataset file not found! Ensure 'car_details2.csv' exists.")
-        return
+    # Load raw model mapping data (for dynamic brand → model mapping)
+    raw_data = pd.read_csv("car_details2.csv")
 
-    # Ensure column names are lowercase
-    df.columns = df.columns.str.lower()
+    # Get list of brands and build brand → models map
+    brand_to_models = raw_data.groupby("brand")["model"].unique().to_dict()
 
-    # Unique dropdown options
-    brand_options = sorted(df["brand"].dropna().astype(str).unique().tolist())
-    fuel_options = sorted(df["fuel_type"].dropna().astype(str).unique().tolist())
-    insurance_options = sorted(df["insurance"].dropna().astype(str).unique().tolist())
-    location_options = sorted(df["location"].dropna().astype(str).unique().tolist())
-    ownership_options = sorted(df["ownership"].dropna().astype(str).unique().tolist())
-    transmission_options = sorted(df["transmission"].dropna().astype(str).unique().tolist())
-
-    # Apply background image
-    set_bg("bgimage.jpeg")  # Use relative path
-
-    st.title("🚘 Car Price Prediction")
-    st.write("Fill in the details below to predict the estimated price of a used car.")
-
-    # Layout with 2 columns
+    # ------------------------------
+    # 🌟 Two-Column Layout
+    # ------------------------------
     col1, col2 = st.columns(2)
 
     with col1:
-        brand = st.selectbox("Select Brand", brand_options)
-        
-        # Filter models based on selected brand
-        model_options = sorted(df[df["brand"] == brand]["model"].dropna().astype(str).unique().tolist())
-        car_model = st.selectbox("Select Model", model_options)
-        
-        fuel_type = st.selectbox("Fuel Type", fuel_options)
-        insurance = st.selectbox("Insurance", insurance_options)
+        brand = st.selectbox("Brand", sorted(brand_to_models.keys()))
+        fuel = st.selectbox("Fuel Type", encoders['fuel_type'].classes_)
+        insurance = st.selectbox("Insurance", encoders['insurance'].classes_)
+        location = st.selectbox("Location", encoders['location'].classes_)
+        ownership = st.selectbox("Ownership", encoders['ownership'].classes_)
 
     with col2:
-        location = st.selectbox("Location", location_options)
-        ownership = st.selectbox("Ownership Type", ownership_options)
-        transmission = st.selectbox("Transmission Type", transmission_options)
-        engine_displacement = st.number_input("Engine Displacement (cc)", min_value=500, max_value=7000, step=1)
-        kms_driven = st.number_input("Kilometers Driven", min_value=0, max_value=500000, step=100)
-        registration_year = st.number_input("Registration Year", min_value=1990, max_value=2025, step=1)
-        seats = st.number_input("Number of Seats", min_value=2, max_value=9, step=1)
-    
-    # Convert Selected Values to Encoded Values (Handles missing encoders safely)
-    brand_encoded = encode_value(label_encoders.get("brand"), brand)
-    model_encoded = encode_value(label_encoders.get("model"), car_model)  # Encode the selected model
-    fuel_type_encoded = encode_value(label_encoders.get("fuel_type"), fuel_type)
-    insurance_encoded = encode_value(label_encoders.get("insurance"), insurance)
-    location_encoded = encode_value(label_encoders.get("location"), location)
-    ownership_encoded = encode_value(label_encoders.get("ownership"), ownership)
-    transmission_encoded = encode_value(label_encoders.get("transmission"), transmission)
+        models_for_brand = brand_to_models.get(brand, [])
+        model_name = st.selectbox("Model", sorted(models_for_brand))
+        transmission = st.selectbox("Transmission", encoders['transmission'].classes_)
+        kms_driven = st.number_input("Kilometers Driven", min_value=0)
+        engine_disp = st.number_input("Engine Displacement (cc)", min_value=500, max_value=6000)
+        seats = st.selectbox("Number of Seats", [2, 4, 5, 6, 7, 8])
+        reg_year = st.number_input("Year of Registration", min_value=1990, max_value=2025)
+        car_age = 2025 - reg_year
 
-    # Prepare input array - now including the model_encoded value
-    input_data = np.array([[brand_encoded, model_encoded, engine_displacement, fuel_type_encoded, 
-                           insurance_encoded, kms_driven, location_encoded, ownership_encoded, 
-                           registration_year, seats, transmission_encoded]])
+    # Encode inputs
+    def encode_inputs(user_inputs):
+        encoded = []
+        for col, val in user_inputs.items():
+            le = encoders.get(col)
+            if le:
+                try:
+                    encoded.append(le.transform([val])[0])
+                except:
+                    encoded.append(0)  # fallback
+            else:
+                encoded.append(val)
+        return encoded
 
-    # Predict button
-    if st.button("Predict Price 💰"):
-        prediction = model.predict(input_data)[0]
-        st.success(f"🚗 Estimated Price for {brand} {car_model}: ₹{round(prediction, 2):,}")  
+    # Predict Button
+    if st.button("💸 Predict Price"):
+        user_input = {
+            "brand": brand,
+            "fuel_type": fuel,
+            "insurance": insurance,
+            "location": location,
+            "model": model_name,
+            "ownership": ownership,
+            "transmission": transmission,
+            "engine_displacement": engine_disp,
+            "kms_driven": kms_driven,
+            "seats": seats,
+            "car_age": car_age
+        }
 
-# Run the app
+        final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
+        prediction = model.predict(final_input)[0]
+
+        st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
+
+# ------------------------------
+# 🚀 Launch the app
+# ------------------------------
 if __name__ == "__main__":
     main()

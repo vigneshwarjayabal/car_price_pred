@@ -5,9 +5,6 @@ import pickle
 import base64
 import os
 
-# ------------------------------
-# 🔧 Set background function
-# ------------------------------
 def set_bg(image_path):
     """Set background image for the Streamlit app."""
     if os.path.exists(image_path):
@@ -29,11 +26,12 @@ def set_bg(image_path):
     else:
         st.warning("Background image not found! Ensure the file path is correct.")
 
-# ------------------------------
-# 🧠 Main Streamlit App
-# ------------------------------
+
 def main():
+    # Move this line to the very top of the function
     st.set_page_config(page_title="Car Price Predictor", layout="centered")
+    
+    # Background image function
     set_bg("bgimage.jpeg")
 
     st.title("🚗 Used Car Price Predictor")
@@ -49,9 +47,6 @@ def main():
     # Get list of brands and build brand → models map
     brand_to_models = raw_data.groupby("brand")["model"].unique().to_dict()
 
-    # ------------------------------
-    # 🌟 Two-Column Layout
-    # ------------------------------
     col1, col2 = st.columns(2)
 
     with col1:
@@ -106,8 +101,5 @@ def main():
 
         st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
 
-# ------------------------------
-# 🚀 Launch the app
-# ------------------------------
 if __name__ == "__main__":
     main()

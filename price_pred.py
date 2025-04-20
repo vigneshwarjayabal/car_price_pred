@@ -89,6 +89,7 @@ def main():
             "transmission": transmission,
             "engine_displacement": engine_disp,
             "kms_driven": kms_driven,
+            " reg_year" :  reg_year,
             "seats": seats,
             "car_age": car_age
         }

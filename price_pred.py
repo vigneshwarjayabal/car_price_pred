@@ -28,7 +28,6 @@ def set_bg(image_path):
 
 
 def main():
-    # Move this line to the very top of the function
     st.set_page_config(page_title="Car Price Predictor", layout="centered")
     
     # Background image function

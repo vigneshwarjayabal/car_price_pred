@@ -60,7 +60,7 @@ def main():
         engine_disp = st.number_input("Engine Displacement (cc)", min_value=500, max_value=6000)
         seats = st.selectbox("Number of Seats", [2, 4, 5, 6, 7, 8])
         reg_year = st.number_input("Year of Registration", min_value=1990, max_value=2025)
-        car_age = 2025 - reg_year
+        
 
     # Encode inputs
     def encode_inputs(user_inputs):
@@ -89,7 +89,7 @@ def main():
             "Kms_Driven": kms_driven,
             "Registration_Year": reg_year,
             "Seats": seats,
-            "Car_Age": car_age
+           
         }
     
         final_input = np.array(encode_inputs(user_input)).reshape(1, -1)

@@ -5,9 +5,6 @@ import pickle
 import base64
 import os
 
-# ------------------------------
-# 🔧 Set background function
-# ------------------------------
 def set_bg(image_path):
     """Set background image for the Streamlit app."""
     if os.path.exists(image_path):
@@ -29,11 +26,8 @@ def set_bg(image_path):
     else:
         st.warning("Background image not found! Ensure the file path is correct.")
 
-# ------------------------------
-# 🧠 Main Streamlit App
-# ------------------------------
+
 def main():
-    st.set_page_config(page_title="Car Price Predictor", layout="centered")
     set_bg("bgimage.jpeg")
 
     st.title("🚗 Used Car Price Predictor")
@@ -49,9 +43,6 @@ def main():
     # Get list of brands and build brand → models map
     brand_to_models = raw_data.groupby("brand")["model"].unique().to_dict()
 
-    # ------------------------------
-    # 🌟 Two-Column Layout
-    # ------------------------------
     col1, col2 = st.columns(2)
 
     with col1:
@@ -72,6 +63,7 @@ def main():
         car_age = 2025 - reg_year
 
     # Encode inputs
+    # Encode inputs
     def encode_inputs(user_inputs):
         encoded = []
         for col, val in user_inputs.items():
@@ -84,8 +76,8 @@ def main():
             else:
                 encoded.append(val)
         return encoded
-
-    # Predict Button
+    
+    # Before prediction, print the shape of final_input
     if st.button("💸 Predict Price"):
         user_input = {
             "brand": brand,
@@ -97,17 +89,19 @@ def main():
             "transmission": transmission,
             "engine_displacement": engine_disp,
             "kms_driven": kms_driven,
+            " reg_year" :  reg_year,
             "seats": seats,
             "car_age": car_age
         }
-
+    
         final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
+        
+        # Debugging: Print the shape of the final_input to check if it matches the expected number of features
+        st.write(f"Input features shape: {final_input.shape}")
+    
         prediction = model.predict(final_input)[0]
-
         st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
 
-# ------------------------------
-# 🚀 Launch the app
-# ------------------------------
+
 if __name__ == "__main__":
     main()

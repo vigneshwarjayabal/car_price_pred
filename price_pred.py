@@ -99,8 +99,8 @@ def main():
     
         from babel.numbers import format_currency
 
-        prediction = model.predict(final_input)[0]
-        formatted_price = (format_currency(prediction, 'INR', locale='en_IN')/4)
+        prediction = model.predict(final_input)[0] / 4
+        formatted_price = format_currency(prediction, 'INR', locale='en_IN')
         st.success(f"Predicted price for **{brand} {model_name}** is {formatted_price}")
 
 

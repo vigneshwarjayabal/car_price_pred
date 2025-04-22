@@ -34,7 +34,7 @@ def main():
     st.markdown("Fill the details below to get the **predicted resale price** of your car.")
 
     # Load model and encoders
-    model = pickle.load(open("random_forest_model.pkl", "rb"))
+    model = pickle.load(open("random_forest2_model.pkl", "rb"))
     encoders = pickle.load(open("encoders.pkl", "rb"))
 
     # Load raw model mapping data (for dynamic brand → model mapping)

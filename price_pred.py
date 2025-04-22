@@ -5,6 +5,10 @@ import pickle
 import base64
 import os
 
+def load_model(model_path):
+    with open(model_path, 'rb') as file:
+        return pickle.load(file)
+
 def set_bg(image_path):
     """Set background image for the Streamlit app."""
     if os.path.exists(image_path):
@@ -34,73 +38,55 @@ def main():
     st.markdown("Fill the details below to get the **predicted resale price** of your car.")
 
     # Load model and encoders
-    model = pickle.load(open("random_forest_model.pkl", "rb"))
-    encoders = pickle.load(open("encoders.pkl", "rb"))
+    model_car=load_model("RandomForestRegressor.pkl")
 
-    # Load raw model mapping data (for dynamic brand → model mapping)
-    raw_data = pd.read_csv("car_details2.csv")
+    encoder_city=load_model("encoder_city.pkl")
+    encoder_model=load_model("encoder_model.pkl")
+    encoder_insurance=load_model("encoder_insurance.pkl")
+    encoder_fuel_type=load_model("encoder_fuel_type.pkl")
+    encoder_transmission=load_model("encoder_transmission.pkl")
+    encoder_ownership=load_model("encoder_ownership.pkl")
 
-    # Get list of brands and build brand → models map
-    brand_to_models = raw_data.groupby("brand")["model"].unique().to_dict()
+    df=pd.read_csv("Final_UsedCars_Data.csv")
+    categorical_features = ["city", "model", "insurance", "fuel_type", "transmission", "ownership"]
+    dropdown_options = {feature: df[feature].unique().tolist() for feature in categorical_features}
+
 
     col1, col2 = st.columns(2)
 
     with col1:
-        brand = st.selectbox("Brand", sorted(brand_to_models.keys()))
-        fuel = st.selectbox("Fuel Type", encoders['fuel_type'].classes_)
-        insurance = st.selectbox("Insurance", encoders['insurance'].classes_)
-        location = st.selectbox("Location", encoders['location'].classes_)
-        ownership = st.selectbox("Ownership", encoders['ownership'].classes_)
+        city_select = st.selectbox("Select City", dropdown_options["city"])
+        city=encoder_city.transform([[city_select]])[0][0]
+        model_select = st.selectbox("Select Car Model", dropdown_options["model"])
+        model=encoder_model.transform([[model_select]])[0][0]
+        insurance_select = st.selectbox("Insurance Type", dropdown_options["insurance"])
+        insurance=encoder_insurance.transform([[insurance_select]])[0][0]
+        fuel_type_select = st.selectbox("Fuel Type", dropdown_options["fuel_type"])
+        fuel_type=encoder_fuel_type.transform([[fuel_type_select]])[0][0]
+        transmission_select = st.selectbox("Transmission Type", dropdown_options["transmission"])
+        transmission=encoder_transmission.transform([[transmission_select]])[0][0]
+        ownership_select = st.selectbox("Ownership Count", dropdown_options["ownership"])
+        ownership=encoder_ownership.transform([[ownership_select]])[0][0]
+
 
     with col2:
-        models_for_brand = brand_to_models.get(brand, [])
-        model_name = st.selectbox("Model", sorted(models_for_brand))
-        transmission = st.selectbox("Transmission", encoders['transmission'].classes_)
-        kms_driven = st.number_input("Kilometers Driven", min_value=0)
-        engine_disp = st.number_input("Engine Displacement (cc)", min_value=500, max_value=6000)
-        seats = st.selectbox("Number of Seats", [2, 4, 5, 6, 7, 8])
-        reg_year = st.number_input("Year of Registration", min_value=1990, max_value=2025)
-        car_age = 2025 - reg_year
+        seats = st.number_input("Enter Seat Capacity", min_value=2, max_value=10, value=5)
+        kms_driven = st.number_input("Enter KM Driven", min_value=1000, value=10000)
+        year_of_manufacture = st.number_input("Manufacturing Year", min_value=1900, value=2015)
+        engine = st.number_input("Enter Engine CC", min_value=500, value=1200)
+        power = st.number_input("Enter Power (HP)", min_value=10.0, value=100.0)
+        mileage = st.number_input("Enter Mileage (kmpl)", min_value=5.0, value=15.0)
 
-    # Encode inputs
-    # Encode inputs
-    def encode_inputs(user_inputs):
-        encoded = []
-        for col, val in user_inputs.items():
-            le = encoders.get(col)
-            if le:
-                try:
-                    encoded.append(le.transform([val])[0])
-                except:
-                    encoded.append(0)  # fallback
-            else:
-                encoded.append(val)
-        return encoded
     
     # Before prediction, print the shape of final_input
     if st.button("💸 Predict Price"):
-        user_input = {
-            "brand": brand,
-            "fuel_type": fuel,
-            "insurance": insurance,
-            "location": location,
-            "model": model_name,
-            "ownership": ownership,
-            "transmission": transmission,
-            "engine_displacement": engine_disp,
-            "kms_driven": kms_driven,
-            " reg_year" :  reg_year,
-            "seats": seats,
-            "car_age": car_age
-        }
-    
-        final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
-        
-        # Debugging: Print the shape of the final_input to check if it matches the expected number of features
-        st.write(f"Input features shape: {final_input.shape}")
-    
-        prediction = model.predict(final_input)[0]
-        st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
+        input_data = {"city":city, "model":model,"insurance": insurance,"fuel_type" :fuel_type,"seats": seats,"kms_driven" :kms_driven, 
+                                "transmission":transmission,"year_of_manufacture": year_of_manufacture, "engine":engine, "power":power,"mileage": mileage,"ownership": ownership}
+        input_df=pd.DataFrame([input_data])
+        # Call prediction function
+        predicted_price = model_car.predict(input_df)
+
+        st.success(f"Predicted price for **{model}** is ₹ {predicted_price[0]:,.2f}")
 
 
 if __name__ == "__main__":

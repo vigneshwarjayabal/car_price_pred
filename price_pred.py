@@ -97,8 +97,12 @@ def main():
         # Debugging: Print the shape of the final_input to check if it matches the expected number of features
         st.write(f"Input features shape: {final_input.shape}")
     
+        from babel.numbers import format_currency
+
         prediction = model.predict(final_input)[0]
-        st.success(f"Predicted price for **{brand} {model_name}** is ₹ {int(prediction):,}")
+        formatted_price = format_currency(prediction, 'INR', locale='en_IN')
+        st.success(f"Predicted price for **{brand} {model_name}** is {formatted_price}")
+
 
 
 if __name__ == "__main__":

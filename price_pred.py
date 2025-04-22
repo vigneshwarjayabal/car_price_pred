@@ -34,7 +34,7 @@ def main():
     st.markdown("Fill the details below to get the **predicted resale price** of your car.")
 
     # Load model and encoders
-    model = pickle.load(open("model.pkl", "rb"))  # Load your saved model
+    model = pickle.load(open("finalmodel.pkl", "rb"))  # Load your saved model
     encoders = pickle.load(open("encoding_artifacts.pkl", "rb"))  # Load your encoding artifacts
 
     # Load raw model mapping data (for dynamic brand → model mapping)

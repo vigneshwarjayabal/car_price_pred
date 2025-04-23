@@ -94,12 +94,10 @@ def main():
     
         final_input = np.array(encode_inputs(user_input)).reshape(1, -1)
         
-        # Debugging: Print the shape of the final_input to check if it matches the expected number of features
-        st.write(f"Input features shape: {final_input.shape}")
     
         from babel.numbers import format_currency
 
-        prediction = model.predict(final_input)[0] / 4
+        prediction = model.predict(final_input)[0]
         formatted_price = format_currency(prediction, 'INR', locale='en_IN')
         st.success(f"Predicted price for **{brand} {model_name}** is {formatted_price}")
 
